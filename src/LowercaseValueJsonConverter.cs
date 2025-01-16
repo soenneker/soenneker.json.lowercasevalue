@@ -10,6 +10,9 @@ namespace Soenneker.Json.LowercaseValue;
 /// </summary>
 public class LowercaseValueJsonConverter : JsonConverter<object>
 {
+    // Static cached exception messages to reduce allocation cost for frequently thrown exceptions.
+    private const string _cannotConvertError = $"{nameof(LowercaseValueJsonConverter)} cannot be applied to the specified type.";
+
     public override bool CanConvert(Type typeToConvert)
     {
         return typeToConvert == typeof(string);
@@ -17,26 +20,17 @@ public class LowercaseValueJsonConverter : JsonConverter<object>
 
     public override object? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        if (typeToConvert == typeof(string))
-        {
-            string? value = reader.GetString();
-            return value?.ToLowerInvariantFast();
-        }
+        if (typeToConvert != typeof(string))
+            throw new InvalidOperationException(_cannotConvertError);
 
-        throw new InvalidOperationException($"LowercaseValueJsonConverter cannot be applied to {typeToConvert}.");
+        return reader.GetString()?.ToLowerInvariantFast();
     }
 
     public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
     {
-        if (value is string stringValue)
-        {
-            string toLower = stringValue.ToLowerInvariantFast();
+        if (value is not string stringValue)
+            throw new InvalidOperationException(_cannotConvertError);
 
-            writer.WriteStringValue(toLower);
-        }
-        else
-        {
-            throw new InvalidOperationException($"LowercaseValueJsonConverter cannot be applied to {value.GetType()}.");
-        }
+        writer.WriteStringValue(stringValue.ToLowerInvariantFast());
     }
 }
