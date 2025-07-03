@@ -8,7 +8,7 @@ namespace Soenneker.Json.LowercaseValue;
 /// <summary>
 /// A System.Text.Json converter attribute for forcing the (de)serialized value to lowercase
 /// </summary>
-public class LowercaseValueJsonConverter : JsonConverter<object>
+public sealed class LowercaseValueJsonConverter : JsonConverter<object>
 {
     // Static cached exception messages to reduce allocation cost for frequently thrown exceptions.
     private const string _cannotConvertError = $"{nameof(LowercaseValueJsonConverter)} cannot be applied to the specified type.";
