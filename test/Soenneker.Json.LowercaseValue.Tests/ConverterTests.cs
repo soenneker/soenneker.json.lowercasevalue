@@ -1,11 +1,10 @@
-﻿using AwesomeAssertions;
-using Xunit;
+using AwesomeAssertions;
 
 namespace Soenneker.Json.LowercaseValue.Tests;
 
 public class ConverterTests
 {
-    [Fact]
+    [Test]
     public void Should_convert_with_systemtextjson()
     {
         var testClass = new TestClass { Test = "BLAH", Test1 = "BLAR", TestBool = true };
