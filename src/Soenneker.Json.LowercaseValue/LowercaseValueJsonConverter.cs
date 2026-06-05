@@ -13,11 +13,23 @@ public sealed class LowercaseValueJsonConverter : JsonConverter<object>
     // Static cached exception messages to reduce allocation cost for frequently thrown exceptions.
     private const string _cannotConvertError = $"{nameof(LowercaseValueJsonConverter)} cannot be applied to the specified type.";
 
+    /// <summary>
+    /// Executes the can convert operation.
+    /// </summary>
+    /// <param name="typeToConvert">The type to convert.</param>
+    /// <returns>A value indicating whether the operation succeeded.</returns>
     public override bool CanConvert(Type typeToConvert)
     {
         return typeToConvert == typeof(string);
     }
 
+    /// <summary>
+    /// Executes the read operation.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    /// <param name="typeToConvert">The type to convert.</param>
+    /// <param name="options">The options.</param>
+    /// <returns>The result of the operation.</returns>
     public override object? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (typeToConvert != typeof(string))
@@ -26,6 +38,12 @@ public sealed class LowercaseValueJsonConverter : JsonConverter<object>
         return reader.GetString()?.ToLowerInvariantFast();
     }
 
+    /// <summary>
+    /// Executes the write operation.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    /// <param name="value">The value.</param>
+    /// <param name="options">The options.</param>
     public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
     {
         if (value is not string stringValue)
