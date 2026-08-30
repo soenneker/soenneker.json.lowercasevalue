@@ -3,9 +3,9 @@
 public class TestClass
 {
     [LowercaseValue]
-    public string Test { get; set; }
+    public string Test { get; set; } = null!;
 
-    public string Test1 { get; set; }
+    public string Test1 { get; set; } = null!;
 
     public bool TestBool { get; set; }
 }

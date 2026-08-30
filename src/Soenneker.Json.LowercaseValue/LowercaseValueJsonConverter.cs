@@ -6,7 +6,7 @@ using Soenneker.Extensions.String;
 namespace Soenneker.Json.LowercaseValue;
 
 /// <summary>
-/// A System.Text.Json converter attribute for forcing the (de)serialized value to lowercase
+/// Converts JSON string values to invariant lowercase when reading and writing.
 /// </summary>
 public sealed class LowercaseValueJsonConverter : JsonConverter<object>
 {
@@ -14,17 +14,17 @@ public sealed class LowercaseValueJsonConverter : JsonConverter<object>
     private const string _cannotConvertError = $"{nameof(LowercaseValueJsonConverter)} cannot be applied to the specified type.";
 
     /// <summary>
-    /// Executes the can convert operation.
+    /// Determines whether the requested type is <see cref="string"/>.
     /// </summary>
     /// <param name="typeToConvert">The type to convert.</param>
-    /// <returns>A value indicating whether the operation succeeded.</returns>
+    /// <returns><see langword="true"/> for <see cref="string"/>; otherwise, <see langword="false"/>.</returns>
     public override bool CanConvert(Type typeToConvert)
     {
         return typeToConvert == typeof(string);
     }
 
     /// <summary>
-    /// Executes the read operation.
+    /// Reads a JSON string and converts it to invariant lowercase.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="typeToConvert">The type to convert.</param>
@@ -35,11 +35,14 @@ public sealed class LowercaseValueJsonConverter : JsonConverter<object>
         if (typeToConvert != typeof(string))
             throw new InvalidOperationException(_cannotConvertError);
 
+        if (reader.TokenType != JsonTokenType.String)
+            throw new JsonException($"Expected a JSON string but found {reader.TokenType}.");
+
         return reader.GetString()?.ToLowerInvariantFast();
     }
 
     /// <summary>
-    /// Executes the write operation.
+    /// Writes a string as an invariant-lowercase JSON string.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="value">The value.</param>

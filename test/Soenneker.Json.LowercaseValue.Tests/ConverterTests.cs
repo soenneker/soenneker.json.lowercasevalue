@@ -15,4 +15,15 @@ public class ConverterTests
         result.Should().Contain("BLAR");
         result.Should().Contain("blah");
     }
+
+    [Test]
+    public void Should_lowercase_during_deserialization()
+    {
+        TestClass? result = System.Text.Json.JsonSerializer.Deserialize<TestClass>(
+            """{"Test":"MiXeD","Test1":"UNCHANGED","TestBool":false}""");
+
+        result.Should().NotBeNull();
+        result!.Test.Should().Be("mixed");
+        result.Test1.Should().Be("UNCHANGED");
+    }
 }
